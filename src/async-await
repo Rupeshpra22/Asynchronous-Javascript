@@ -251,3 +251,7 @@ handlePromise().catch((err) => console.log(err));
 //so here we are handling error by using standard catch chaining
 //As we know async function will always going to give promise and hence we can use then chain or catch chain to my function call
 //So we have used catch chain here to handle error in async await
+
+// we can either use standard promise or async await
+// In standard promise there is a chance of long chaining and this same scenario in async await looks more clean 
+// but now currently most people use async await way of promise handling and to do async operations
