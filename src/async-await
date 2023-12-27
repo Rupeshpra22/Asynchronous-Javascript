@@ -1,0 +1,253 @@
+// //Lets learn about async await
+// A function with async keyword is async function
+// The important thing with async function is that it always returns a Promise
+// If an async function is just returning a normal data like suppose it is just returning a String
+// then async function will automatically wrap promise around it and returns that Promise
+// if async function is already returning a promise then async function wont wrap another promise to it
+// as it is already returning a promise it will just return that particular promise
+
+// async function getvalue() {
+//   return "some value";
+// }
+
+// let data = getvalue();
+// console.log(data); //so here the returned value will be a Promise
+
+//Async is basically use to handle a promise
+// lets take an example
+
+// let pr1 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 1 is resolved");
+//   }, 2000);
+// });
+
+// async function getAsyncData() {
+//   //so here async function is handling the promise
+//   //here we are chaining the then block to handle the promise
+//   pr1.then(function (data) {
+//     console.log(data);
+//     return "data";
+//   });
+// }
+// getAsyncData();
+// getAsyncData().then((data) => console.log("async function call", data));
+//The above code is 100% correct because we already know that async function will always returns a promise
+//And we are handling that promise using then block.
+
+//So we saw  by then block we did the handling of promise inside the async function
+//But there is also an another keyword called await which we can use to handle the promise in async function
+//So aysnc-await combo helps us to handle the promise
+//Note it is really important to use await keyword only inside the async function else it will throw Syntax error in console
+// let pr1 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 1 is resolved");
+//   }, 2000);
+// });
+
+// async function getAsyncData() {
+//   // pr1.then(function (data) {
+//   //   console.log(data);
+//   // });
+//   // the above code will become like below
+//   let data = await pr1; //so this is how we handle promise using async await
+// we write this await keyword in front of a promise so here in above line pr1 returns a promise hance to handle this promise we have used await keyword
+//   console.log(data);
+// }
+// getAsyncData();
+
+//Now lets see what is the difference between handling promise using promise then and handling promise using async await
+// let pr1 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 1 is resolved");
+//   }, 5000);
+// });
+
+// //Using promise method
+// function handlePromise() {
+//   console.log(pr1);
+//   pr1.then(function (data) {
+//     console.log(data);
+//   });
+//   console.log("Namaste Javascript");
+// }
+
+// handlePromise();
+
+//So in above code, once we call handlePromise function
+//it sees that there is a promise and it get to know that it is not resolved yet hence it will not run the then block
+//It will quickly return the promise object with status as pending and result as undefined so that it allows user to perform other action in the application thereby not blocking the user
+//So console.log(pr1) will give me promise object with status as pending and result as undefined
+//Then it will comes in pr1.then() javascript engine will get to know that it is not resolved yet hence it will skip this step for now and it will execute the next line after then block
+//hence Namaste javascript gets print after console.log(pr1) and once 5 seconds is completed, promise will be resolved and javascript engine now will start execute the then block and after 5 second it will print promise 1 is resolved
+
+//So the above was the handling of promise using standard promise then
+//Now lets look on handling promise using async await
+
+// let pr1 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 1 is resolved");
+//   }, 5000);
+// });
+
+// //Using promise method
+// async function handlePromise() {
+//   console.log(pr1);
+//   let data = await pr1;
+//   console.log(data);
+//   console.log("Namaste Javascript");
+// }
+
+// handlePromise();
+// console.log("After HandlePromise function");
+
+//Here when we call handlePromise, on console.log(pr1) it will quickly return promise object with status as pending and result as undefined
+//And now when javascript comes at let data = await(pr1) line now what will happen behind the scene is it will suspend the execution of handlePromise function
+//And the code after the handlePromise function block will get executes because handlePromise function execution is suspended
+//So in above code 1st console.log(pr1) will get print and in next line there is await hence the handlePromise execution will get suspend and it will also get popped out of the callstack
+//And hence console.log("After HandlePromise function") will get execute
+//Now after 5 seconds once the promise is resolved, handlePromise function execution will resume now and this function will also get pushed inside the call stack
+//and after this console.log(data) will get print and then console.log("Namaste Javascript") will get print
+
+//So the main difference between standard promise handling and async await is
+//standard promise wont suspend the execution of the function, if it has any promise and it is not resolved yet so it will not run the then block
+//all the other code after this then block will continue to execute, and once the promise is resolved then only the then block will get execute
+//But in async await it will literally suspend the function execution so once javascript encounters await keyword and it is not resolved yet
+//it will suspend that function execution and the next lines of code wont get execute, instead the code outside of the suspended function will start the execution
+//And once that promise is resolved, the suspended function execution will be resumed now it will be pushed inside the callstack
+//and then it will execute the code after the await pr1 line
+
+//Now lets say we are calling the same promise twice
+
+// let pr1 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 1 is resolved");
+//   }, 5000);
+// });
+
+// //Using promise method
+// async function handlePromise() {
+//   let data = await pr1;
+//   console.log(data);
+//   console.log("Namaste Javascript");
+
+//   let data2 = await pr1;
+//   console.log(data2);
+//   console.log("Namaste Javascript 2");
+// }
+
+// handlePromise();
+//So in above code when we call handlePromise function, on line let data = await pr1
+//as javascript sees await and it is not resolved yet hence it will suspend the function execution here, and the function will get popped out of the stack
+//and once it is resolved then the function will get push back in the call stack and the function execution will resume
+
+//And it will print data and Namaste Javascript
+//And now once javascript encounters let data2 = await pr1, so javascript now encounters await keyword and it also get to know that this promise is resolved already
+//hence it will go to the next line and print data2 and then Namaste Javascript 2
+
+//Now lets suppose we have 2 different promises
+// let pr1 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 1 is resolved");
+//   }, 10000);
+// });
+
+// let pr2 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 2 is resolved");
+//   }, 5000);
+// });
+
+// // Using promise method
+// async function handlePromise() {
+//   let data = await pr1;
+//   console.log(data);
+//   console.log("Namaste Javascript");
+
+//   let data2 = await pr2;
+//   console.log(data2);
+//   console.log("Namaste Javascript 2");
+// }
+
+// handlePromise();
+
+//Now in this scenario, when handlePromise get called, let data = await pr1 will leads to function execution suspension because it is not yet resolved
+//Once it will resolve then function get pushed in the call stack and it will print data and Namaste Javascript
+//And once it comes to line let data2 = await pr2 then javascript will get to know it is already resolved
+//hence it will immediately print data2 and Namaste Javascript 2 as well
+
+//Lets take another example
+
+// let pr1 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 1 is resolved");
+//   }, 5000);
+// });
+
+// let pr2 = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve("Promise 2 is resolved");
+//   }, 10000);
+// });
+
+// // Using promise method
+// async function handlePromise() {
+//   let data = await pr1;
+//   console.log(data);
+//   console.log("Namaste Javascript");
+
+//   let data2 = await pr2;
+//   console.log(data2);
+//   console.log("Namaste Javascript 2");
+// }
+// handlePromise();
+//In this example, pr1 takes 5 sec to resolve while pr2 takes 10 sec to resolve
+//and when we call handlePromise here, on await pr1, javascript will suspend handlePromise execution and pop this function out of the call stack
+//once after 5 sec, pr1 gets resolved then it will print data and Namaste Javascript because once pr1 is resolved the execution of this function will resume as this function will get pushed in the stack again
+//Now at await pr2, it will again suspend the handlePromise execution because it is not yet resolved and hence it will take some time and once the promise is resolved
+//then only it will print data2 and Namaste javascript 2
+
+//Now lets look at real world example
+
+//we will be doing an api call to a server
+// async function handlePromise() {
+//   let data = await fetch("https://api.github.com/users/rupeshpra22"); //fetch returns a promise
+//   let res = await data.json(); //fetch returns a promise and in data it will be in a Response object now to extract the api data from that response object we need to use json method over the response object
+//   //this response object has lot more information but we care about api data for this scenario so we will convert the data in json format using json() method which itself returns a promise hence we will use await keyword just before it
+//   console.log(res);
+// }
+// handlePromise();
+
+//Error handling in async await
+//There are 2 ways with which we can do error handling
+//1: try catch block
+//2: attaching catch block chain to the function call
+
+//Try catch block
+
+// async function handlePromise() {
+//   try {
+//     let data = await fetch("https://api.github.com/users/rupeshpra22");
+//     let res = await data.json();
+//     console.log(res);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// handlePromise();
+
+//So in above code we are handling here by wrapping our api call inside a try block and if suppose in try block we encounters any error
+//then catch block will get execute
+
+//Chaining the function call using catch block
+
+async function handlePromise() {
+  let data = await fetch("https://api.github.com/users/rupeshpra22");
+  let res = await data.json();
+  console.log(res);
+}
+handlePromise().catch((err) => console.log(err));
+
+//so here we are handling error by using standard catch chaining
+//As we know async function will always going to give promise and hence we can use then chain or catch chain to my function call
+//So we have used catch chain here to handle error in async await
